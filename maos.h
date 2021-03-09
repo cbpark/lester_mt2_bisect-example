@@ -1,4 +1,4 @@
-/* Copyright 2021 Chan Beom Park <cbpark@gmail.com */
+/* Copyright 2021 Chan Beom Park <cbpark@gmail.com> */
 
 #ifndef LESTER_MT2_BISECT_EXAMPLE_MAOS_H_
 #define LESTER_MT2_BISECT_EXAMPLE_MAOS_H_

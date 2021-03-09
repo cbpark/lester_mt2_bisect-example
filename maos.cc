@@ -1,4 +1,4 @@
-/* Copyright 2021 Chan Beom Park <cbpark@gmail.com */
+/* Copyright 2021 Chan Beom Park <cbpark@gmail.com> */
 
 #include "maos.h"
 #include <cmath>    // std::fabs, std::sqrt
