@@ -1,3 +1,5 @@
+/* Copyright 2021 Chan Beom Park <cbpark@gmail.com> */
+
 #include <cmath>  // std::sqrt
 #include <iostream>
 #include <utility>  // std::pair
