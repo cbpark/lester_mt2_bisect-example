@@ -29,7 +29,7 @@ int main() {
     cout << "MT2: " << mt2 << '\n';
 
     // the scale factor to make the parameters massless.
-    // it'll be used when calculating the longitudinal momentum
+    // it'll be used for calculating the longitudinal momentum
     double scale =
         (vis_a[0] * vis_a[0] + vis_a[1] * vis_a[1] + vis_a[2] * vis_a[2] +
          vis_b[0] * vis_b[0] + vis_b[1] * vis_b[1] + vis_b[2] * vis_b[2] +
