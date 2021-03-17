@@ -1,3 +1,7 @@
+.#*
+*~
 *.o
 *cache
 mt2
+*.lhe
+*.dat
