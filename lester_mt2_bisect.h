@@ -348,6 +348,7 @@ bool __private_ellipsesAreDisjoint(const double coeffLamPow3,
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+#include <tuple>
 
 class asymm_mt2_lester_bisect {
 public:
@@ -667,6 +668,37 @@ double MT(double px1, double px2, double py1, double py2, double m1,
     return sqrt(Msq);
 }
 
+/// CBP: the coefficients of equations, a ky^2 + 2 b ky + c = 0,
+/// which is from the condition that kx has a real value.
+std::tuple<double, double, double> coeff_ky(double px, double py, double m_vis,
+                                            double m_inv, double mt2) {
+    double m_vis_sq = m_vis * m_vis;
+    double m_inv_sq = m_inv * m_inv;
+    double et_vis_sq = px * px + py * py + m_vis_sq;
+
+    double d = mt2 * mt2 - m_vis_sq - m_inv_sq;
+    double a = -4.0 * m_vis_sq * et_vis_sq;
+    double b = 2.0 * d * py * et_vis_sq;
+    double c = (d * d - 4.0 * (et_vis_sq - px * px) * m_inv_sq) * et_vis_sq;
+
+    return {a, b, c};
+}
+
+/// CBP: check whether the MT2 is from a balanced configuration.
+bool balanced(double mt2, double p1x, double p1y, double m_vis1, double m_inv1,
+              double p2x, double p2y, double m_vis2, double m_inv2) {
+    double m_min1 = m_vis1 + m_inv1;
+    double m_min2 = m_vis2 + m_inv2;
+
+    double a, b, c;
+    if (m_min1 > m_min2) {
+        std::tie(a, b, c) = coeff_ky(p1x, p1y, m_vis1, m_inv1, mt2);
+    } else {
+        std::tie(a, b, c) = coeff_ky(p2x, p2y, m_vis2, m_inv2, mt2);
+    }
+    return b * b - a * c >= 0.0;
+}
+
 std::pair<double, double> ben_findsols(double MT2, double px, double py,
                                        double visM, double Ma, double pxb,
                                        double pyb, double metx, double mety,
@@ -706,12 +738,24 @@ std::pair<double, double> ben_findsols(double MT2, double px, double py,
     // First, determine the range.
     double myx = 0.;
     double myy = 0.;
-    if (TermSqy1 * TermSqy1 - 4. * TermSqy0 * TermSqy2 < 0) {
+
+    // if (TermSqy1 * TermSqy1 - 4. * TermSqy0 * TermSqy2 < 0) {
+    if (!balanced(MT2, px, py, visM, Ma, pxb, pyb, visMb, Mb)) {
         // unbalanced
-        // CBP: See Eq.(14) in https://arxiv.org/pdf/0711.4526.pdf
-        double r = Ma / visM;
-        sols.first = r * px;
-        sols.second = r * py;
+        // CBP:
+        // See Eqs.(14), (19) and (20) in https://arxiv.org/pdf/0711.4526.pdf
+        double r;
+        if (visM + Ma > visMb + Mb) {
+            // MT2 is determined by the MT of the first decay chain.
+            r = Ma / visM;
+            sols.first = r * px;
+            sols.second = r * py;
+        } else {
+            // MT2 is determined by the MT of the second decay chain.
+            r = Mb / visMb;
+            sols.first = metx - r * pxb;
+            sols.second = mety - r * pyb;
+        }
         return sols;
     } else {
         double sol1 =
