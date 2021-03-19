@@ -687,11 +687,24 @@ std::tuple<double, double, double> coeff_ky(double px, double py, double m_vis,
 /// CBP: check whether the MT2 is from a balanced configuration.
 bool balanced(double mt2, double p1x, double p1y, double m_vis1, double m_inv1,
               double p2x, double p2y, double m_vis2, double m_inv2) {
-    double m_min1 = m_vis1 + m_inv1;
-    double m_min2 = m_vis2 + m_inv2;
+    double scale =
+        (p1x * p1x + p1y * p1y + p2x * p2x + p2y * p2y + m_vis1 * m_vis1 +
+         m_inv1 * m_inv1 + m_vis2 * m_vis2 + m_inv2 * m_inv2) /
+        8.0;
+    scale = std::sqrt(scale);
+
+    mt2 /= scale;
+    p1x /= scale;
+    p1y /= scale;
+    m_vis1 /= scale;
+    m_inv1 /= scale;
+    p2x /= scale;
+    p2y /= scale;
+    m_vis2 /= scale;
+    m_inv2 /= scale;
 
     double a, b, c;
-    if (m_min1 > m_min2) {
+    if (m_vis1 + m_inv1 > m_vis2 + m_inv2) {
         std::tie(a, b, c) = coeff_ky(p1x, p1y, m_vis1, m_inv1, mt2);
     } else {
         std::tie(a, b, c) = coeff_ky(p2x, p2y, m_vis2, m_inv2, mt2);
@@ -739,8 +752,8 @@ std::pair<double, double> ben_findsols(double MT2, double px, double py,
     double myx = 0.;
     double myy = 0.;
 
-    // if (TermSqy1 * TermSqy1 - 4. * TermSqy0 * TermSqy2 < 0) {
-    if (!balanced(MT2, px, py, visM, Ma, pxb, pyb, visMb, Mb)) {
+    if (TermSqy1 * TermSqy1 - 4. * TermSqy0 * TermSqy2 < 0 ||
+        !balanced(MT2, px, py, visM, Ma, pxb, pyb, visMb, Mb)) {
         // unbalanced
         // CBP:
         // See Eqs.(14), (19) and (20) in https://arxiv.org/pdf/0711.4526.pdf
