@@ -31,12 +31,11 @@ int main() {
     // the scale factor to make the parameters massless.
     // it'll be used for calculating the longitudinal momentum
     double scale =
-        (vis_a[0] * vis_a[0] + vis_a[1] * vis_a[1] + vis_a[2] * vis_a[2] +
-         vis_b[0] * vis_b[0] + vis_b[1] * vis_b[1] + vis_b[2] * vis_b[2] +
-         ptmiss[0] * ptmiss[0] + ptmiss[1] * ptmiss[1] + m_chi * m_chi +
-         m_chi * m_chi) /
-        8.0;
-    scale = std::sqrt(scale);
+        vis_a[0] * vis_a[0] + vis_a[1] * vis_a[1] + vis_a[2] * vis_a[2] +
+        vis_a[3] * vis_a[3] + vis_b[0] * vis_b[0] + vis_b[1] * vis_b[1] +
+        vis_b[2] * vis_b[2] + vis_b[3] * vis_b[3] + ptmiss[0] * ptmiss[0] +
+        ptmiss[1] * ptmiss[1] + m_chi * m_chi + m_chi * m_chi;
+    scale = 10.0 * std::sqrt(scale);
 
     // the parent particle mass
     double m_parent = 500.0;

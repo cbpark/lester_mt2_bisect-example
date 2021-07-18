@@ -54,10 +54,11 @@ std::pair<double, double> longitudinalMomentum(double m_vis, double vis_px,
 #endif
 
     // for numerical stability
-    if (std::fabs(disc) < 1.0e-4) { disc = 0.0; }
+    const double eps = 1.0e-5 / scale;
+    if (std::fabs(disc) < eps) { disc = 0.0; }
 
     // unphysical momentum?
-    if (disc < 0.0) { return {-1.0e+10, -1.0e+10}; }
+    if (disc < 0.0) { return {1.0e+10, 1.0e+10}; }
 
     const double term1 = vis_pz * d;
     const double term2 =
